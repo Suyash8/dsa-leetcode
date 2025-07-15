@@ -1,10 +1,17 @@
 #include <string>
 #include <vector>
 
+// --- START_CUSTOM_DATA_STRUCTURES ---
+// No custom data structures for this problem
+// --- END_CUSTOM_DATA_STRUCTURES ---
+
+// --- START_TYPE_DEFINITIONS ---
 using Input = std::string;
 using Output = bool;
 using TestCase = std::pair<Input, Output>;
+// --- END_TYPE_DEFINITIONS ---
 
+// --- START_TEST_CASES ---
 static const std::vector<TestCase> test_cases = {
     // ---- minimal length edge cases ----
     {"a", false},  // length < 3
@@ -68,7 +75,9 @@ static const std::vector<TestCase> test_cases = {
     {"pQr", false},       // all consonants
     {"oPq", true},        // o vowel, P consonant
 };
+// --- END_TEST_CASES ---
 
+// --- START_SOLUTION_CLASS ---
 class Solution {
 public:
   bool isValid(std::string word) {
@@ -99,3 +108,4 @@ public:
 
   Output solve(const Input &input) { return isValid(input); }
 };
+// --- END_SOLUTION_CLASS ---
