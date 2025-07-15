@@ -2,6 +2,7 @@
 
 # Create an executable for our tests
 add_executable(run_tests
+    0001_two_sum_test.cpp
     # Add new test files here, e.g., 0001_two_sum_test.cpp
 )
 
