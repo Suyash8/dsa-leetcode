@@ -1,4 +1,3 @@
-
 # This script automatically finds LeetCode solutions and creates a separate test for each one.
 
 # Find the generic test runner template
@@ -18,7 +17,10 @@ foreach(solution_file ${solution_files})
 
     # Create a new executable for this specific problem
     # It's built from the generic runner and the specific solution file
-    add_executable(${test_name} ${GENERIC_TEST_RUNNER} ${solution_file})
+    add_executable(${test_name} ${GENERIC_TEST_RUNNER})
+
+    # Pass the absolute path of the solution file as a preprocessor definition
+    target_compile_definitions(${test_name} PRIVATE "SOLUTION_FILE_PATH=\"${solution_file}\"")
 
     # Link the test against GoogleTest
     target_link_libraries(${test_name} PRIVATE gtest_main)
