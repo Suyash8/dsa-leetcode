@@ -1,4 +1,3 @@
-
 #include "gtest/gtest.h"
 #include <chrono>
 #include <iostream>
@@ -16,11 +15,11 @@
 // This macro will be defined by CMake to point to the specific solution.cpp file
 #include SOLUTION_FILE_PATH
 
-// --- Forward Declarations (no longer needed for Solution class) ---
-// These will be defined in the solution.cpp file that is compiled with this runner.
-// class Solution; // No longer needed, as solution.cpp is included
-using Input = std::tuple<std::vector<int>, int>; // Example: Adjust for problem-specific input types
-using Output = std::vector<int>; // Example: Adjust for problem-specific output types
+// --- Forward Declarations ---
+// These types are defined in the solution.cpp file that is compiled with this runner.
+// We declare them here so the test fixture can use them.
+using Input = decltype(test_cases[0].first);
+using Output = decltype(test_cases[0].second);
 using TestCase = std::pair<Input, Output>;
 extern const std::vector<TestCase> test_cases;
 
