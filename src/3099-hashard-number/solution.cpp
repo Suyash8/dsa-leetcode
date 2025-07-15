@@ -1,9 +1,16 @@
 #include <vector>
 
+// --- START_CUSTOM_DATA_STRUCTURES ---
+// No custom data structures for this problem
+// --- END_CUSTOM_DATA_STRUCTURES ---
+
+// --- START_TYPE_DEFINITIONS ---
 using Input = int;
 using Output = int;
 using TestCase = std::pair<Input, Output>;
+// --- END_TYPE_DEFINITIONS ---
 
+// --- START_TEST_CASES ---
 static const std::vector<TestCase> test_cases = {
     // ---- Single-digit numbers (all are Harshad) ----
     {1, 1}, // 1 % 1 = 0
@@ -54,7 +61,9 @@ static const std::vector<TestCase> test_cases = {
     {126, 9}, // 1+2+6=9, 126 % 9 = 0
     {360, 9}, // 3+6+0=9, 360 % 9 = 0
 };
+// --- END_TEST_CASES ---
 
+// --- START_SOLUTION_CLASS ---
 class Solution {
 public:
   int sumOfTheDigitsOfHarshadNumber(int x) {
@@ -69,3 +78,4 @@ public:
 
   Output solve(Input x) { return sumOfTheDigitsOfHarshadNumber(x); }
 };
+// --- END_SOLUTION_CLASS ---
