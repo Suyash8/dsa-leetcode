@@ -1,5 +1,2 @@
-# /home/illionar/Projects/dsa-leetcode/src/CMakeLists.txt
-
-# Create a library named 'leetcode_solutions' from all .cpp files in subdirectories.
-file(GLOB_RECURSE solution_files "*/solution.cpp")
-add_library(leetcode_solutions ${solution_files})
+# This file is now much simpler. It just needs to make sure the source files are available.
+# We don't need to create a library anymore, as each test will be a separate executable.
