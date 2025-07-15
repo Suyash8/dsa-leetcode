@@ -2,10 +2,17 @@
 #include <string>
 #include <vector>
 
+// --- START_CUSTOM_DATA_STRUCTURES ---
+// No custom data structures for this problem
+// --- END_CUSTOM_DATA_STRUCTURES ---
+
+// --- START_TYPE_DEFINITIONS ---
 using Input = std::string;
 using Output = std::string;
 using TestCase = std::pair<Input, Output>;
+// --- END_TYPE_DEFINITIONS ---
 
+// --- START_TEST_CASES ---
 static const std::vector<TestCase> test_cases = {
     // minimal segments
     {"0.0.0.0", "0[.]0[.]0[.]0"},
@@ -46,7 +53,9 @@ static const std::vector<TestCase> test_cases = {
     {"10.0.0.1", "10[.]0[.]0[.]1"}
 
 };
+// --- END_TEST_CASES ---
 
+// --- START_SOLUTION_CLASS ---
 class Solution {
 public:
   std::string defangIPaddr(std::string address) {
@@ -62,3 +71,4 @@ public:
 
   Output solve(const Input &input) { return defangIPaddr(input); }
 };
+// --- END_SOLUTION_CLASS ---
