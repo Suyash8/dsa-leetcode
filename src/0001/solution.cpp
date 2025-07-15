@@ -1,4 +1,3 @@
-
 #include <vector>
 #include <unordered_map>
 #include <tuple>
@@ -20,8 +19,8 @@ static const std::vector<TestCase> test_cases = {
 // --- Solution ---
 class Solution {
 public:
-    // The method to be tested
-    std::vector<int> solve(std::vector<int>& nums, int target) {
+    // Original LeetCode method signature
+    std::vector<int> twoSum(std::vector<int>& nums, int target) {
         std::unordered_map<int, int> map;
         for (int i = 0; i < nums.size(); ++i) {
             int complement = target - nums[i];
@@ -31,5 +30,11 @@ public:
             map[nums[i]] = i;
         }
         return {};
+    }
+
+    // Wrapper method for generic test runner
+    Output solve(Input input) {
+        auto [nums, target] = input;
+        return twoSum(nums, target);
     }
 };
