@@ -3,6 +3,10 @@
 # Find the generic test runner template
 set(GENERIC_TEST_RUNNER "${CMAKE_CURRENT_SOURCE_DIR}/generic_test.cpp")
 
+# Results output directory for JSON test results
+set(RESULTS_OUTPUT_DIR "${CMAKE_BINARY_DIR}/test_results")
+file(MAKE_DIRECTORY ${RESULTS_OUTPUT_DIR})
+
 # Find all solution.cpp files in the src directory
 file(GLOB_RECURSE solution_files "${CMAKE_SOURCE_DIR}/src/*/solution.cpp")
 
@@ -20,7 +24,11 @@ foreach(solution_file ${solution_files})
     add_executable(${test_name} ${GENERIC_TEST_RUNNER})
 
     # Pass the absolute path of the solution file as a preprocessor definition
-    target_compile_definitions(${test_name} PRIVATE "SOLUTION_FILE_PATH=\"${solution_file}\"")
+    target_compile_definitions(${test_name} PRIVATE
+        "SOLUTION_FILE_PATH=\"${solution_file}\""
+        "PROBLEM_NAME_STR=\"${problem_name}\""
+        "RESULTS_OUTPUT_DIR_STR=\"${RESULTS_OUTPUT_DIR}\""
+    )
 
     # Link the test against GoogleTest
     target_link_libraries(${test_name} PRIVATE gtest_main)
