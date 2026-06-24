@@ -9,5 +9,12 @@ compile_commands.json
 *.out
 *.exe
 
+# Generated data
+data/
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+
 # Other
 .DS_Store

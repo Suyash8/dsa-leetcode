@@ -29,14 +29,27 @@ perform_build_and_test() {
     return 0 # Indicate success
 }
 
+# Function to aggregate results into JSON
+aggregate_results() {
+    echo "--- Aggregating Results ---"
+    python3 scripts/aggregate_results.py
+    if [ $? -ne 0 ]; then
+        echo "Result aggregation failed."
+        return 1
+    fi
+    return 0
+}
+
 # Main execution flow
 if perform_build_and_test; then
     echo "Build and tests completed successfully."
+    aggregate_results
 else
     echo "Attempting to clean and retry..."
     rm -rf "$BUILD_DIR"
     if perform_build_and_test; then
         echo "Build and tests completed successfully after retry."
+        aggregate_results
     else
         echo "Build and tests failed after retry. Please check the errors above."
         exit 1
