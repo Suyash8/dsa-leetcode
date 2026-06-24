@@ -125,7 +125,7 @@ def aggregate(project_root: Path) -> list[dict]:
                 "total_runtime_ms": test_results.get("total_runtime_ms", 0),
                 "average_runtime_ms": test_results.get("average_runtime_ms", 0),
                 "max_runtime_ms": test_results.get("max_runtime_ms", 0),
-                "total_memory_kb": test_results.get("total_memory_kb", 0),
+                "total_memory_bytes": test_results.get("total_memory_bytes", 0),
                 "test_results": test_results.get("test_results", []),
             }
 
@@ -168,7 +168,7 @@ def main():
         stats_str = "no results"
         if p["stats"]:
             s = p["stats"]
-            stats_str = f"{s['passed_tests']}/{s['total_tests']} passed, {s['total_runtime_ms']:.3f}ms total, {s['total_memory_kb']}kB"
+            stats_str = f"{s['passed_tests']}/{s['total_tests']} passed, {s['total_runtime_ms']:.3f}ms total, {s['total_memory_bytes']} bytes"
         print(f"  [{p['difficulty']:6s}] #{p['number']:>4d} {p['title']:<35s} — {stats_str}")
 
 

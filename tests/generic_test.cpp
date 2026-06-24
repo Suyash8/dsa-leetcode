@@ -33,27 +33,55 @@ using Output = decltype(test_cases[0].second);
 using TestCase = std::pair<Input, Output>;
 extern const std::vector<TestCase> test_cases;
 
-#if defined(__linux__)
-long getMemoryUsage() {
-    std::ifstream status("/proc/self/status");
-    std::string line;
-    long vmRss = 0;
-    while (std::getline(status, line)) {
-        if (line.rfind("VmRSS:", 0) == 0) {
-            vmRss = std::stol(line.substr(line.find(":") + 1, line.rfind("kB") - line.find(":") - 1));
-            break;
-        }
+#include <new>
+#include <cstdlib>
+#include <atomic>
+
+struct MemoryStats {
+    std::atomic<size_t> current_allocated{0};
+    std::atomic<size_t> peak_allocated{0};
+};
+
+MemoryStats g_mem_stats;
+
+void* operator new(size_t size) {
+    size_t* ptr = (size_t*)std::malloc(size + sizeof(size_t));
+    if (!ptr) throw std::bad_alloc();
+    *ptr = size;
+    
+    g_mem_stats.current_allocated += size;
+    if (g_mem_stats.current_allocated > g_mem_stats.peak_allocated) {
+        g_mem_stats.peak_allocated = g_mem_stats.current_allocated.load();
     }
-    return vmRss;
+    
+    return ptr + 1;
 }
-#endif
+
+void operator delete(void* p) noexcept {
+    if (!p) return;
+    size_t* ptr = (size_t*)p - 1;
+    size_t size = *ptr;
+    g_mem_stats.current_allocated -= size;
+    std::free(ptr);
+}
+
+void operator delete(void* p, size_t size) noexcept {
+    if (!p) return;
+    size_t* ptr = (size_t*)p - 1;
+    g_mem_stats.current_allocated -= size;
+    std::free(ptr);
+}
+
+void* operator new[](size_t size) { return operator new(size); }
+void operator delete[](void* p) noexcept { operator delete(p); }
+void operator delete[](void* p, size_t size) noexcept { operator delete(p, size); }
 
 // --- Per-test-case result storage ---
 struct TestCaseResult {
     int index;
     bool passed;
     double runtime_ms;
-    long memory_kb;
+    long memory_bytes;
 };
 
 // Global storage for results — populated by the listener, written at program end
@@ -77,19 +105,19 @@ public:
 
     void OnTestStart(const ::testing::TestInfo& /*test_info*/) override {
         test_start_time_ = std::chrono::high_resolution_clock::now();
-#if defined(__linux__)
-        test_start_memory_ = getMemoryUsage();
-#endif
+        g_mem_stats.peak_allocated = g_mem_stats.current_allocated.load();
+        test_start_memory_ = g_mem_stats.current_allocated.load();
     }
 
     void OnTestEnd(const ::testing::TestInfo& test_info) override {
         auto end_time = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> duration = end_time - test_start_time_;
 
-        long memory_kb = 0;
-#if defined(__linux__)
-        memory_kb = getMemoryUsage();
-#endif
+        long memory_bytes = 0;
+        size_t peak = g_mem_stats.peak_allocated.load();
+        if (peak > test_start_memory_) {
+            memory_bytes = peak - test_start_memory_;
+        }
 
         bool passed = test_info.result()->Passed();
         if (passed) {
@@ -102,7 +130,7 @@ public:
         result.index = g_current_test_index++;
         result.passed = passed;
         result.runtime_ms = duration.count();
-        result.memory_kb = memory_kb;
+        result.memory_bytes = memory_bytes;
         g_test_results.push_back(result);
     }
 
@@ -113,10 +141,8 @@ public:
         std::cout << "  " << passed_tests_count_ << "/" << (passed_tests_count_ + failed_tests_count_) << " tests passed. ";
         std::cout << "Total time: " << duration.count() << " ms.";
 
-#if defined(__linux__)
-        long end_memory = getMemoryUsage();
-        std::cout << " Total memory (VmRSS): " << end_memory << " kB.";
-#endif
+        long end_memory = g_mem_stats.current_allocated.load();
+        std::cout << " Total heap memory: " << end_memory << " bytes.";
         std::cout << std::endl;
     }
 };
@@ -155,7 +181,7 @@ static void writeResultsJson() {
         else failed++;
         total_runtime += r.runtime_ms;
         if (r.runtime_ms > max_runtime) max_runtime = r.runtime_ms;
-        if (r.memory_kb > max_memory) max_memory = r.memory_kb;
+        if (r.memory_bytes > max_memory) max_memory = r.memory_bytes;
     }
 
     double avg_runtime = total > 0 ? total_runtime / total : 0.0;
@@ -174,7 +200,7 @@ static void writeResultsJson() {
     out << "  \"total_runtime_ms\": " << total_runtime << ",\n";
     out << "  \"average_runtime_ms\": " << avg_runtime << ",\n";
     out << "  \"max_runtime_ms\": " << max_runtime << ",\n";
-    out << "  \"total_memory_kb\": " << max_memory << ",\n";
+    out << "  \"total_memory_bytes\": " << max_memory << ",\n";
     out << "  \"test_results\": [\n";
 
     for (size_t i = 0; i < g_test_results.size(); ++i) {
@@ -183,7 +209,7 @@ static void writeResultsJson() {
         out << "      \"index\": " << r.index << ",\n";
         out << "      \"passed\": " << (r.passed ? "true" : "false") << ",\n";
         out << "      \"runtime_ms\": " << r.runtime_ms << ",\n";
-        out << "      \"memory_kb\": " << r.memory_kb << "\n";
+        out << "      \"memory_bytes\": " << r.memory_bytes << "\n";
         out << "    }";
         if (i + 1 < g_test_results.size()) out << ",";
         out << "\n";

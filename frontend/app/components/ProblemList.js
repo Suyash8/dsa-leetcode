@@ -123,12 +123,12 @@ export default function ProblemList({ problems, topics }) {
         <table className="data-table">
           <thead>
             <tr>
-              <th style={{ width: 60 }}>#</th>
-              <th>TITLE</th>
-              <th style={{ width: 80 }}>DIFF</th>
+              <th style={{ width: 60, cursor: "pointer" }} onClick={() => setSortBy("number")}>#</th>
+              <th style={{ cursor: "pointer" }} onClick={() => setSortBy("title")}>TITLE</th>
+              <th style={{ width: 80, cursor: "pointer" }} onClick={() => setSortBy("difficulty")}>DIFF</th>
               <th style={{ width: 140 }}>TOPICS</th>
               <th style={{ width: 80, textAlign: "right" }}>TESTS</th>
-              <th style={{ width: 90, textAlign: "right" }}>RUNTIME</th>
+              <th style={{ width: 90, textAlign: "right", cursor: "pointer" }} onClick={() => setSortBy("runtime")}>RUNTIME</th>
               <th style={{ width: 90, textAlign: "right" }}>MEMORY</th>
               <th style={{ width: 70, textAlign: "center" }}>STATUS</th>
             </tr>
@@ -147,6 +147,8 @@ export default function ProblemList({ problems, topics }) {
                 <td>
                   <span
                     className={`label label--${p.difficulty.toLowerCase()}`}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => setFilterDifficulty(p.difficulty)}
                   >
                     {p.difficulty.toUpperCase()}
                   </span>
@@ -154,7 +156,12 @@ export default function ProblemList({ problems, topics }) {
                 <td>
                   <div style={styles.topicWrap}>
                     {p.topics?.map((t) => (
-                      <span key={t} className="label label--topic">
+                      <span
+                        key={t}
+                        className="label label--topic"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setFilterTopic(t)}
+                      >
                         {t}
                       </span>
                     ))}
@@ -179,7 +186,7 @@ export default function ProblemList({ problems, topics }) {
                 </td>
                 <td style={{ textAlign: "right", fontFamily: "var(--font-mono)" }}>
                   {p.stats ? (
-                    <span>{p.stats.total_memory_kb}kB</span>
+                    <span>{p.stats.total_memory_bytes} B</span>
                   ) : (
                     <span style={{ color: "var(--text-tertiary)" }}>—</span>
                   )}

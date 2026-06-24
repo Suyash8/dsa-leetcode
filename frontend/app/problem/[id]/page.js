@@ -85,8 +85,8 @@ export default async function ProblemPage({ params }) {
                     <span className="stat-block__label">AVG MS/TEST</span>
                   </div>
                   <div className="stat-block">
-                    <span className="stat-block__value">{problem.stats.total_memory_kb}</span>
-                    <span className="stat-block__label">MEMORY KB</span>
+                    <span className="stat-block__value">{problem.stats.total_memory_bytes}</span>
+                    <span className="stat-block__label">MEMORY BYTES</span>
                   </div>
                 </div>
               )}

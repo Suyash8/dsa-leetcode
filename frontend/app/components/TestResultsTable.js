@@ -32,8 +32,8 @@ export default function TestResultsTable({ results }) {
                 <span style={styles.unit}>ms</span>
               </td>
               <td style={{ textAlign: "right" }}>
-                <span style={styles.memory}>{r.memory_kb}</span>
-                <span style={styles.unit}>kB</span>
+                <span style={styles.memory}>{r.memory_bytes}</span>
+                <span style={styles.unit}>B</span>
               </td>
             </tr>
           ))}

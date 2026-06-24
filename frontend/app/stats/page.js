@@ -21,7 +21,7 @@ export default function StatsPage() {
       difficulty: p.difficulty,
       totalRuntime: p.stats.total_runtime_ms,
       avgRuntime: p.stats.average_runtime_ms,
-      memory: p.stats.total_memory_kb,
+      memory: p.stats.total_memory_bytes,
       tests: p.stats.total_tests,
       passed: p.stats.passed_tests,
     }));
