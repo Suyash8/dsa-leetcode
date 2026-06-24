@@ -5,8 +5,8 @@ import Link from "next/link";
 
 export default function ProblemList({ problems, topics }) {
   const [search, setSearch] = useState("");
-  const [filterDifficulty, setFilterDifficulty] = useState("ALL");
-  const [filterTopic, setFilterTopic] = useState("ALL");
+  const [filterDifficulties, setFilterDifficulties] = useState([]);
+  const [filterTopics, setFilterTopics] = useState([]);
   const [sortBy, setSortBy] = useState("number");
 
   const filtered = useMemo(() => {
@@ -22,12 +22,12 @@ export default function ProblemList({ problems, topics }) {
       );
     }
 
-    if (filterDifficulty !== "ALL") {
-      result = result.filter((p) => p.difficulty === filterDifficulty);
+    if (filterDifficulties.length > 0) {
+      result = result.filter((p) => filterDifficulties.includes(p.difficulty));
     }
 
-    if (filterTopic !== "ALL") {
-      result = result.filter((p) => p.topics?.includes(filterTopic));
+    if (filterTopics.length > 0) {
+      result = result.filter((p) => p.topics?.some((t) => filterTopics.includes(t)));
     }
 
     result = [...result].sort((a, b) => {
@@ -44,7 +44,7 @@ export default function ProblemList({ problems, topics }) {
     });
 
     return result;
-  }, [problems, search, filterDifficulty, filterTopic, sortBy]);
+  }, [problems, search, filterDifficulties, filterTopics, sortBy]);
 
   return (
     <div>
@@ -67,12 +67,17 @@ export default function ProblemList({ problems, topics }) {
           <div style={styles.filterGroup}>
             <span style={styles.filterLabel}>DIFF</span>
             <select
-              value={filterDifficulty}
-              onChange={(e) => setFilterDifficulty(e.target.value)}
+              value=""
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val && !filterDifficulties.includes(val)) {
+                  setFilterDifficulties((prev) => [...prev, val]);
+                }
+              }}
               style={styles.select}
               id="filter-difficulty"
             >
-              <option value="ALL">ALL</option>
+              <option value="" disabled>+ DIFF</option>
               <option value="Easy">EASY</option>
               <option value="Medium">MEDIUM</option>
               <option value="Hard">HARD</option>
@@ -81,12 +86,17 @@ export default function ProblemList({ problems, topics }) {
           <div style={styles.filterGroup}>
             <span style={styles.filterLabel}>TOPIC</span>
             <select
-              value={filterTopic}
-              onChange={(e) => setFilterTopic(e.target.value)}
+              value=""
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val && !filterTopics.includes(val)) {
+                  setFilterTopics((prev) => [...prev, val]);
+                }
+              }}
               style={styles.select}
               id="filter-topic"
             >
-              <option value="ALL">ALL</option>
+              <option value="" disabled>+ TOPIC</option>
               {topics.map((t) => (
                 <option key={t} value={t}>
                   {t.toUpperCase()}
@@ -110,6 +120,38 @@ export default function ProblemList({ problems, topics }) {
           </div>
         </div>
       </div>
+
+      {/* ─── ACTIVE FILTERS ─── */}
+      {(filterDifficulties.length > 0 || filterTopics.length > 0) && (
+        <div style={styles.activeFilters}>
+          {filterDifficulties.map(d => (
+            <span 
+              key={d} 
+              className={`label label--${d.toLowerCase()}`}
+              style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 }}
+              onClick={() => setFilterDifficulties(prev => prev.filter(x => x !== d))}
+            >
+              {d.toUpperCase()} <span style={{fontSize: "0.8em"}}>✕</span>
+            </span>
+          ))}
+          {filterTopics.map(t => (
+            <span 
+              key={t} 
+              className="label label--topic"
+              style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 }}
+              onClick={() => setFilterTopics(prev => prev.filter(x => x !== t))}
+            >
+              {t.toUpperCase()} <span style={{fontSize: "0.8em"}}>✕</span>
+            </span>
+          ))}
+          <button 
+            style={styles.clearFiltersBtn}
+            onClick={() => { setFilterDifficulties([]); setFilterTopics([]); }}
+          >
+            CLEAR ALL
+          </button>
+        </div>
+      )}
 
       {/* ─── COUNT ─── */}
       <div style={styles.countBar}>
@@ -148,7 +190,11 @@ export default function ProblemList({ problems, topics }) {
                   <span
                     className={`label label--${p.difficulty.toLowerCase()}`}
                     style={{ cursor: "pointer" }}
-                    onClick={() => setFilterDifficulty(p.difficulty)}
+                    onClick={() => {
+                      if (!filterDifficulties.includes(p.difficulty)) {
+                        setFilterDifficulties(prev => [...prev, p.difficulty]);
+                      }
+                    }}
                   >
                     {p.difficulty.toUpperCase()}
                   </span>
@@ -160,7 +206,11 @@ export default function ProblemList({ problems, topics }) {
                         key={t}
                         className="label label--topic"
                         style={{ cursor: "pointer" }}
-                        onClick={() => setFilterTopic(t)}
+                        onClick={() => {
+                          if (!filterTopics.includes(t)) {
+                            setFilterTopics(prev => [...prev, t]);
+                          }
+                        }}
                       >
                         {t}
                       </span>
@@ -351,5 +401,23 @@ const styles = {
     fontWeight: 700,
     letterSpacing: "0.15em",
     color: "var(--text-tertiary)",
+  },
+  activeFilters: {
+    display: "flex",
+    gap: 8,
+    padding: "12px 0 0 0",
+    flexWrap: "wrap",
+    alignItems: "center",
+  },
+  clearFiltersBtn: {
+    background: "transparent",
+    border: "none",
+    fontFamily: "var(--font-mono)",
+    fontSize: "0.65rem",
+    fontWeight: 700,
+    color: "var(--text-tertiary)",
+    cursor: "pointer",
+    textDecoration: "underline",
+    marginLeft: 8,
   },
 };
