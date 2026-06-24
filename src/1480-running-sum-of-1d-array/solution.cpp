@@ -1,9 +1,16 @@
 #include <vector>
 
+// --- START_CUSTOM_DATA_STRUCTURES ---
+// No custom data structures for this problem
+// --- END_CUSTOM_DATA_STRUCTURES ---
+
+// --- START_TYPE_DEFINITIONS ---
 using Input = std::vector<int>;
 using Output = std::vector<int>;
 using TestCase = std::pair<Input, Output>;
+// --- END_TYPE_DEFINITIONS ---
 
+// --- START_TEST_CASES ---
 static const std::vector<TestCase> test_cases = {
     // ---- Minimal / edge cases ----
     {{}, {}},     // empty input → empty output
@@ -30,7 +37,9 @@ static const std::vector<TestCase> test_cases = {
     {{1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
      {1, 3, 6, 10, 15, 21, 28, 36, 45, 55}}, // 1 to 10
 };
+// --- END_TEST_CASES ---
 
+// --- START_SOLUTION_CLASS ---
 class Solution {
 public:
   std::vector<int> runningSum(std::vector<int> &nums) {
@@ -49,3 +58,4 @@ public:
     return runningSum(nums);
   }
 };
+// --- END_SOLUTION_CLASS ---
