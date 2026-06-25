@@ -1,6 +1,5 @@
-#include <iostream>
-#include <utility>
 #include <string>
+#include <utility>
 #include <vector>
 
 // --- START_CUSTOM_DATA_STRUCTURES ---
@@ -82,6 +81,8 @@ static const std::vector<TestCase> test_cases = {
 // --- START_SOLUTION_CLASS ---
 #include "solution.cpp"
 
-Output run_solve(Solution& solution, const Input &input) { return solution.isValid(input); }
+Output run_solve(Solution &solution, const Input &input) {
+  return solution.isValid(input);
+}
 
 // --- END_SOLUTION_CLASS ---

@@ -1,4 +1,3 @@
-#include <iostream>
 #include <utility>
 #include <vector>
 
@@ -68,6 +67,8 @@ static const std::vector<TestCase> test_cases = {
 // --- START_SOLUTION_CLASS ---
 #include "solution.cpp"
 
-Output run_solve(Solution& solution, const Input& input) { return solution.sumOfTheDigitsOfHarshadNumber(input); }
+Output run_solve(Solution &solution, const Input &input) {
+  return solution.sumOfTheDigitsOfHarshadNumber(input);
+}
 
 // --- END_SOLUTION_CLASS ---
