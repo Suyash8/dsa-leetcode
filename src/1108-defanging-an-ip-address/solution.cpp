@@ -1,3 +1,7 @@
+#include <vector>
+#include <string>
+#include <sstream>
+
 class Solution {
 public:
   std::string defangIPaddr(std::string address) {
