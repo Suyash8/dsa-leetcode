@@ -1,6 +1,5 @@
-#include <vector>
-#include <string>
 #include <sstream>
+#include <string>
 
 class Solution {
 public:

@@ -1,4 +1,3 @@
-#include <iostream>
 #include <utility>
 #include <vector>
 
@@ -44,9 +43,9 @@ static const std::vector<TestCase> test_cases = {
 // --- START_SOLUTION_CLASS ---
 #include "solution.cpp"
 
-Output run_solve(Solution& solution, const Input &input) {
-    std::vector<int> nums = input;
-    return solution.runningSum(nums);
-  }
+Output run_solve(Solution &solution, const Input &input) {
+  std::vector<int> nums = input;
+  return solution.runningSum(nums);
+}
 
 // --- END_SOLUTION_CLASS ---
