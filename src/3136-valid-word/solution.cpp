@@ -1,3 +1,7 @@
+#include <vector>
+#include <string>
+#include <sstream>
+
 class Solution {
 public:
   bool isValid(std::string word) {
