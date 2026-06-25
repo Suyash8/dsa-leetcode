@@ -39,15 +39,19 @@ def extract_problem_number(problem_id: str) -> int:
     return 0
 
 
-def parse_solution_file(solution_path: Path) -> dict:
-    """Parse a solution.cpp file and extract code sections using markers."""
-    content = solution_path.read_text(encoding="utf-8")
+def parse_solution_file(problem_dir: Path) -> dict:
+    """Parse problem.cpp and solution.cpp files and extract code sections."""
+    solution_path = problem_dir / "solution.cpp"
+    problem_path = problem_dir / "problem.cpp"
+    
+    solution_content = solution_path.read_text(encoding="utf-8").strip() if solution_path.exists() else ""
+    problem_content = problem_path.read_text(encoding="utf-8") if problem_path.exists() else ""
 
     return {
-        "solution_code": extract_between_markers(content, "START_SOLUTION_CLASS", "END_SOLUTION_CLASS"),
-        "type_definitions_code": extract_between_markers(content, "START_TYPE_DEFINITIONS", "END_TYPE_DEFINITIONS"),
-        "custom_data_structures_code": extract_between_markers(content, "START_CUSTOM_DATA_STRUCTURES", "END_CUSTOM_DATA_STRUCTURES"),
-        "test_cases_code": extract_between_markers(content, "START_TEST_CASES", "END_TEST_CASES"),
+        "solution_code": solution_content,
+        "type_definitions_code": extract_between_markers(problem_content, "START_TYPE_DEFINITIONS", "END_TYPE_DEFINITIONS"),
+        "custom_data_structures_code": extract_between_markers(problem_content, "START_CUSTOM_DATA_STRUCTURES", "END_CUSTOM_DATA_STRUCTURES"),
+        "test_cases_code": extract_between_markers(problem_content, "START_TEST_CASES", "END_TEST_CASES"),
     }
 
 
@@ -84,7 +88,7 @@ def aggregate(project_root: Path) -> list[dict]:
         metadata_path = problem_dir / "metadata.json"
 
         # Parse solution code
-        code_sections = parse_solution_file(solution_path)
+        code_sections = parse_solution_file(problem_dir)
 
         # Load metadata
         metadata = {}

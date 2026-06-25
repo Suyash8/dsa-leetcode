@@ -12,9 +12,9 @@
 #include <unistd.h>
 #endif
 
-// --- Include the Solution File ---
-// This macro will be defined by CMake to point to the specific solution.cpp file
-#include SOLUTION_FILE_PATH
+// --- Include the Problem File ---
+// This macro will be defined by CMake to point to the specific problem.cpp file
+#include PROBLEM_FILE_PATH
 
 // --- Compile-time Problem Identity ---
 // These macros are defined by CMake
@@ -226,12 +226,14 @@ protected:
     Solution solution;
 };
 
+extern Output run_solve(Solution& solution, const Input& input);
+
 // --- The Actual Test ---
 TEST_P(LeetCodeTest, SolvesProblem) {
     const auto& test_case = GetParam();
     auto [input, expected_output] = test_case;
 
-    Output result = solution.solve(input);
+    Output result = run_solve(solution, input);
 
     ASSERT_EQ(result, expected_output);
 }

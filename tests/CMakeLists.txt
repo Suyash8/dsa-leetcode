@@ -7,13 +7,13 @@ set(GENERIC_TEST_RUNNER "${CMAKE_CURRENT_SOURCE_DIR}/generic_test.cpp")
 set(RESULTS_OUTPUT_DIR "${CMAKE_BINARY_DIR}/test_results")
 file(MAKE_DIRECTORY ${RESULTS_OUTPUT_DIR})
 
-# Find all solution.cpp files in the src directory
-file(GLOB_RECURSE solution_files "${CMAKE_SOURCE_DIR}/src/*/solution.cpp")
+# Find all problem.cpp files in the src directory
+file(GLOB_RECURSE problem_files "${CMAKE_SOURCE_DIR}/src/*/problem.cpp")
 
-# Loop through each found solution file
-foreach(solution_file ${solution_files})
+# Loop through each found problem file
+foreach(problem_file ${problem_files})
     # Extract the problem number (the directory name)
-    get_filename_component(problem_dir ${solution_file} DIRECTORY)
+    get_filename_component(problem_dir ${problem_file} DIRECTORY)
     get_filename_component(problem_name ${problem_dir} NAME)
 
     # Define the name of the test executable
@@ -23,9 +23,9 @@ foreach(solution_file ${solution_files})
     # It's built from the generic runner and the specific solution file
     add_executable(${test_name} ${GENERIC_TEST_RUNNER})
 
-    # Pass the absolute path of the solution file as a preprocessor definition
+    # Pass the absolute path of the problem file as a preprocessor definition
     target_compile_definitions(${test_name} PRIVATE
-        "SOLUTION_FILE_PATH=\"${solution_file}\""
+        "PROBLEM_FILE_PATH=\"${problem_file}\""
         "PROBLEM_NAME_STR=\"${problem_name}\""
         "RESULTS_OUTPUT_DIR_STR=\"${RESULTS_OUTPUT_DIR}\""
     )
